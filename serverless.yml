@@ -13,12 +13,12 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: prod
-  region: ap-south-1
+  region: us-east-1
 
   # These environment variables are made available to our functions
   # under process.env.
   environment:
-    tableName: weadmit
+    tableName: ${env:TABLE_NAME}
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -32,7 +32,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:ap-south-1:*:*"
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 functions:
   # Defines an HTTP API endpoint that calls the main function in create.js
@@ -45,7 +45,7 @@ functions:
     handler: create.main
     events:
       - http:
-          path: weadmit
+          path: notes
           method: post
           cors: true
           authorizer: aws_iam
@@ -56,7 +56,7 @@ functions:
     handler: get.main
     events:
       - http:
-          path: weadmit/{id}
+          path: notes/{id}
           method: get
           cors: true
           authorizer: aws_iam
